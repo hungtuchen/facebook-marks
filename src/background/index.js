@@ -1,5 +1,9 @@
+/* eslint-disable no-alert, no-console */
+
 function onRequest(request, sender, sendResponse) {
   if (request.method === 'page') {
+    // remove any preconfigured contextMenus when initiated.
+    chrome.contextMenus.removeAll();
     // chrome.pageAction.show(sender.tab.id);
   } else if (request.method === 'add_contextMenu') {
     const id = chrome.contextMenus.create({'title': request.title});
