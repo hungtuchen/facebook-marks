@@ -1,5 +1,6 @@
 bookmark-fb
-=========================
+==============
+
 common pattern for feeds:
 /*/posts/*
 /*/photos/*

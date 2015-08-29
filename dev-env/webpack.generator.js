@@ -4,29 +4,33 @@ import { execSync } from "child_process";
 import webpack from 'webpack';
 import _ from 'lodash';
 import * as Remove from './lib/remove'
+import * as paths from './paths'
 
+// NOTE Style preprocessors
+// If you want to use any of style preprocessor, add related npm package + loader and uncomment following line
 var styleLoaders = {
   'css': '',
-  'less': '!less-loader',
-  'scss|sass': '!sass-loader',
-  'styl': '!stylus-loader'
+  // 'less': '!less-loader',
+  // 'scss|sass': '!sass-loader',
+  // 'styl': '!stylus-loader'
 };
 
+function makeStyleLoaders() {
+  return Object.keys(styleLoaders).map(function(ext) {
+    // NOTE Enable autoprefixer loader
+    var prefix = 'css-loader?sourceMap&root=../assets'//!autoprefixer-loader?browsers=last 2 version';
+    var extLoaders = prefix + styleLoaders[ext];
+    var loader = 'style-loader!' + extLoaders;
+
+    return {
+      loader: loader,
+      test: new RegExp('\\.(' + ext + ')$'),
+      exclude: /node_modules/
+    };
+  });
+}
+
 function configGenerator(isDevelopment, entryScripts) {
-
-  function makeStyleLoaders() {
-    return Object.keys(styleLoaders).map(function(ext) {
-      var prefix = 'css-loader?sourceMap&root=../assets'//!autoprefixer-loader?browsers=last 2 version';
-      var extLoaders = prefix + styleLoaders[ext];
-      var loader = 'style-loader!' + extLoaders;
-
-      return {
-        loader: loader,
-        test: new RegExp('\\.(' + ext + ')$'),
-        exclude: /node_modules/
-      };
-    });
-  }
 
   return {
     ///// Lowlevel config
@@ -44,22 +48,20 @@ function configGenerator(isDevelopment, entryScripts) {
       var entries = {}
 
       _.each(entryScripts, function(entryScript) {
-        let name = Remove.all(entryScript)
+        let name = Remove.extension(entryScript)
 
         if(isDevelopment) {
           entries[name] = [
             'webpack-dev-server/client?https://localhost:3001',
             // Why only-dev-server instead of dev-server:
             // https://github.com/webpack/webpack/issues/418#issuecomment-54288041
-            'webpack/hot/only-dev-server',
-            path.join(__dirname, "../src", entryScript)//,
-            // './override_hot_download_update_chunk',
+            'webpack/hot/only-dev-server'
           ]
         } else {
-          entries[name] = [
-            path.join(__dirname, "../src", entryScript)
-          ]
+          entries[name] = []
         }
+
+        entries[name].push(path.join(paths.src, entryScript))
       })
 
       return entries
@@ -129,14 +131,14 @@ function configGenerator(isDevelopment, entryScripts) {
         ])
       }
 
-      // CUSTOM
+      // NOTE Custom plugins
       // if you need to exclude anything pro loading
       // plugins.push(new webpack.IgnorePlugin(/^(vertx|somethingelse)$/))
 
       return plugins;
     })(),
 
-    // CUSTOM
+    // NOTE Override external requires
     // If you need to change value of required (imported) module
     // for example if you dont want any module import 'net' for various reason like code only for non browser envirinment
     externals: {
@@ -144,14 +146,21 @@ function configGenerator(isDevelopment, entryScripts) {
     },
 
     resolve: {
-      extensions: ['', '.js', '.json'],
-      modulesDirectories: ['src', 'node_modules'],
+      extensions: [
+        '',
+        '.js',
+        '.jsx',
+        '.json'
+      ],
+      modulesDirectories: [
+        'src',
+        'node_modules'
+      ],
       root: [
-        path.join(__dirname, "../src/client/"),
-        path.join(__dirname, "../assets")
+        path.join(__dirname, "../src")
       ],
       alias: (function() {
-        // CUSTOM
+        // NOTE Aliasing
         // If you want to override some path with another. Good for importing same version of React across different libraries
         var alias = {
           // "react$": require.resolve(path.join(__dirname, '../node_modules/react')),
@@ -195,7 +204,7 @@ function configGenerator(isDevelopment, entryScripts) {
         // Scripts
         loaders = loaders.concat([
           {
-            test: /\.js$/,
+            test: /\.jsx?$/,
             exclude: /node_modules/,
             loaders: isDevelopment ? [
               'react-hot', 'babel-loader'
@@ -204,6 +213,18 @@ function configGenerator(isDevelopment, entryScripts) {
             ]
           }
         ])
+
+        // Json
+        loaders = loaders.concat([
+          {
+            test: /\.json/,
+            loader: "json-loader",
+            exclude: /node_modules/
+          }
+        ])
+
+        // NOTE Custom loaders
+        // loaders = loaders.concat([...])
 
         return loaders
       })()

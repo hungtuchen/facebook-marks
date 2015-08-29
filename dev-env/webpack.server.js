@@ -9,6 +9,7 @@ module.exports = function(webpackConfig) {
     new WebpackDevServer(webpack(webpackConfig), {
       contentBase: 'https://localhost:3001',
       publicPath: webpackConfig.output.publicPath,
+      https: true,
       // lazy: true,
       // watchDelay: 50,
       hot: true,
@@ -25,13 +26,12 @@ module.exports = function(webpackConfig) {
         // timings: false,
         // chunks: false,
         // chunkModules: false
-      },
-      https: true
+      }
     }).listen(port, host, function (err, result) {
       if (err) {
         console.log(err)
       } else {
-        console.log('Listening at ' + host + ':' + port);
+        console.log('Listening at https://' + host + ':' + port);
       }
 
       callback()
