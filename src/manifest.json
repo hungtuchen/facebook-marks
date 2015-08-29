@@ -18,6 +18,10 @@
     "default_popup": "popup/index.html"
   },
   "permissions": [
-    "background"
+    "background",
+    "bookmarks",
+    "contextMenus",
+    "https://www.facebook.com/*",
+    "http://www.facebook.com/*"
   ]
 }

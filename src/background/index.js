@@ -1,7 +1,10 @@
 function onRequest(request, sender, sendResponse) {
   if (request.method === 'page') {
-    // 顯示設定新聞小幫手的 page action
-    chrome.pageAction.show(sender.tab.id);
+    // chrome.pageAction.show(sender.tab.id);
+  } else if (request.method === 'add_contextMenu') {
+    const id = chrome.contextMenus.create({'title': request.title});
+    console.log(id);
+    sendResponse({id});
   }
 
   // Return nothing to let the connection be cleaned up.
