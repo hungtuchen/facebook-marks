@@ -9,23 +9,35 @@ const targetPostWhiteList = [
   /(.*\/videos\/.*)/,
   /(.*\/groups\/.*\/permalink\/.*)/,
 ];
+
+const isInWhiteList = (href) => {
+  return targetPostWhiteList.some(pattern => {
+    console.log(pattern);
+    return href.search(pattern) !== -1;
+  });
+};
+
+$(document).find('div[role=article]').each((i, postComponent) => {
+  console.log(postComponent);
+  let lastRef;
+  $(postComponent).find('a._5pcq').each((idx, atag) => {
+    console.log(atag.href);
+    // we may encounter with two postComponent with same class name ex: after somebody respond to .....
+    if (lastRef === atag.href) { return; }
+    if (isInWhiteList(atag.href)) {
+      const postHref = atag.href;
+      lastRef = atag.href;
+      const postBookMark = $('<span>將此則貼文加入書籤</span>');
+      $(atag).parents('._5pcp').append(postBookMark);
+      console.log('appended!');
+    }
+  });
+});
+/*
 if (document.location.hostname === 'www.facebook.com') {
   chrome.extension.sendRequest({method: 'page'}, () => {});
 }
-$(document).find('div[role=article]').each((i, postComponent) => {
-  console.log(postComponent);
-  $(postComponent).find('a._5pcq').each((idx, atag) => {
-    console.log(atag.href);
-    targetPostWhiteList.map((pattern)=> {
-      console.log(pattern);
-      if (atag.href.search(pattern) !== -1) {
-        const postHref = atag.href;
-        $('<span></span>');
-      }
-    });
-  });
-});
-
+*/
 /* deal with changed DOMs (i.e. AJAX-loaded content)
 ported from https://github.com/g0v/newshelper-extension/blob/master/content_script.js */
 /*
