@@ -14,26 +14,33 @@ if (document.location.hostname === 'www.facebook.com') {
 }
 $(document).find('div[role=article]').each((i, postComponent) => {
   console.log(postComponent);
+  let url;
   $(postComponent).find('a._5pcq').each((idx, atag) => {
     console.log(atag.href);
     targetPostWhiteList.map((pattern)=> {
       console.log(pattern);
       if (atag.href.search(pattern) !== -1) {
-        return atag;
+        url = atag.href;
       }
     });
   });
+  // if mouse enter into postComponent, we add the contextMenu and bind bookmark url to it
+  $(postComponent).on('mouseenter', () => {
+    console.log('mouseenter triggered');
+    chrome.extension.sendRequest({
+      method: 'add_contextMenu',
+      url,
+    }, ({currentContextMenuId}) => { currentContextMenuId ? console.log(currentContextMenuId + ' created') : console.log('nothing created'); });
+  });
+  // once it mouse leave from postComponent, we then remove contextMenu and url
+  $(postComponent).on('mouseleave', () => {
+    console.log('leave triggered');
+    chrome.extension.sendRequest({
+      method: 'remove_contextMenu',
+      url,
+    });
+  });
 });
-/*
-$(document).ready(() => {
-  const targets = $('div[role="article"]');
-  console.log(targets);
-});
-*/
-chrome.extension.sendRequest({
-  method: 'add_contextMenu',
-  title: 'Add this post to bookmarks',
-}, ({id}) => { console.log(id); });
 
 /* deal with changed DOMs (i.e. AJAX-loaded content)
 ported from https://github.com/g0v/newshelper-extension/blob/master/content_script.js */
