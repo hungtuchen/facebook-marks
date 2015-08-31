@@ -99,7 +99,7 @@ export default function() {
     _.each(manifest.background.scripts, pushScriptName)
   }
 
-  // Process each script
+  // Process each script (create injectors)
   _.each(scripts, processScriptName)
 
 
@@ -109,9 +109,8 @@ export default function() {
 
   // TODO reload extension when popup html changed. it was developed for use with react,
   // which allow us to make layout changes hot reloaded automaticaly
-  if(manifest.browser_action && manifest.browser_action.default_popup) {
-    const htmlFilepath = manifest.browser_action.default_popup
 
+  const procesHtmlPage = function(htmlFilepath) {
     console.log(clc.green(`Making 'build/${htmlFilepath}'`))
 
     // Read body content
@@ -138,6 +137,30 @@ export default function() {
 
     fs.writeFileSync(fullHtmlPath, popupHtml)
   }
+
+  // Background page
+  if(manifest.background && manifest.background.page) {
+    procesHtmlPage(manifest.background.page)
+  }
+
+  // Browser action
+  manifest.browser_action && manifest.browser_action.default_popup && procesHtmlPage(manifest.browser_action.default_popup)
+
+  // Page action
+  manifest.page_action && manifest.page_action.default_popup && procesHtmlPage(manifest.page_action.default_popup)
+
+  // Chrome page overrides
+  const overrides = manifest.chrome_url_overrides
+
+  if(overrides) {
+    // Bookmarks page
+    overrides.bookmarks && procesHtmlPage(overrides.bookmarks)
+    // History page
+    overrides.history && procesHtmlPage(overrides.history)
+    // Newtab page
+    overrides.newtab && procesHtmlPage(overrides.newtab)
+  }
+
 
 
   // Writing build/manifest.json
