@@ -6,21 +6,16 @@
         "http://www.facebook.com/*",
         "https://www.facebook.com/*"
       ],
-      "js": ["content.js"]
+      "js": ["content/index.js"]
     }
   ],
   "background": {
     "persistent": true,
     "scripts": ["background/index.js"]
   },
-  "browser_action": {
-    "default_title": "bookmark-fb",
-    "default_popup": "popup/index.html"
-  },
   "permissions": [
     "background",
     "bookmarks",
-    "contextMenus",
     "https://www.facebook.com/*",
     "http://www.facebook.com/*"
   ]

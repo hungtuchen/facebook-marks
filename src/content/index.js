@@ -1,7 +1,8 @@
 /* eslint-disable no-alert, no-console */
-import _ from 'lodash';
+// import _ from 'lodash';
 import $ from 'jquery';
 window.$ = $;
+require('./index.css');
 
 const targetPostWhiteList = [
   /(.*\/posts\/.*)/,
@@ -27,7 +28,7 @@ $(document).find('div[role=article]').each((i, postComponent) => {
     if (isInWhiteList(atag.href)) {
       const postHref = atag.href;
       lastRef = atag.href;
-      const postBookMark = $('<span>將此則貼文加入書籤</span>');
+      const postBookMark = $('<span class="bookmark">將此則貼文加入書籤</span>');
       $(atag).parents('._5pcp').append(postBookMark);
       console.log('appended!');
     }
