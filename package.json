@@ -1,7 +1,7 @@
 {
-  "name": "bookmark-fb",
+  "name": "facebook-marks",
   "version": "0.1.0",
-  "description": "a chrome extension let you bookmark fb post into chrome bookmarks",
+  "description": "a chrome extension let you bookmark fb posts into chrome bookmarks",
   "private": true,
   "scripts": {
     "start": "gulp"
