@@ -1,16 +1,35 @@
 /* eslint-disable no-alert, no-console */
+import _ from 'lodash';
 import $ from 'jquery';
 window.$ = $;
 
+const targetPostWhiteList = [
+  /(.*\/posts\/.*)/,
+  /(.*\/photos\/.*)/,
+  /(.*\/videos\/.*)/,
+  /(.*\/groups\/.*\/permalink\/.*)/,
+];
 if (document.location.hostname === 'www.facebook.com') {
   chrome.extension.sendRequest({method: 'page'}, () => {});
 }
-
+$(document).find('div[role=article]').each((i, postComponent) => {
+  console.log(postComponent);
+  $(postComponent).find('a._5pcq').each((idx, atag) => {
+    console.log(atag.href);
+    targetPostWhiteList.map((pattern)=> {
+      console.log(pattern);
+      if (atag.href.search(pattern) !== -1) {
+        return atag;
+      }
+    });
+  });
+});
+/*
 $(document).ready(() => {
   const targets = $('div[role="article"]');
   console.log(targets);
 });
-
+*/
 chrome.extension.sendRequest({
   method: 'add_contextMenu',
   title: 'Add this post to bookmarks',
@@ -18,6 +37,7 @@ chrome.extension.sendRequest({
 
 /* deal with changed DOMs (i.e. AJAX-loaded content)
 ported from https://github.com/g0v/newshelper-extension/blob/master/content_script.js */
+/*
 const registerObserver = () => {
   const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
@@ -59,3 +79,4 @@ const registerObserver = () => {
 
   mutationObserver.observe(target, config);
 };
+*/
