@@ -6,10 +6,11 @@ import './index.less';
 import bookMarkModal from './bookMarkModal';
 
 // append modal on body first
-$(bookMarkModal).appendTo('body');
+const bookMarkModalContainer = $(bookMarkModal);
+$('body').append(bookMarkModalContainer);
 // hack to let modal events work as usual
 // http://stackoverflow.com/questions/13966259/how-to-namespace-twitter-bootstrap-so-styles-dont-conflict
-$('.modal-backdrop').first().appendTo('#modal-container');
+$('.modal-backdrop').first().appendTo(bookMarkModalContainer);
 
 // possible fb post url pattern
 const targetPostWhiteList = [
@@ -33,16 +34,17 @@ $(document).find('div[role=article]').each((i, postComponent) => {
   console.log(postComponent);
   // a._5pcq(if fb change, we need to change too) would contain time span and href of that post
   $(postComponent).find('a._5pcq').each((idx, atag) => {
+    const postHref = atag.href;
     console.log(lastRef);
-    console.log(atag.href);
+    console.log(postHref);
     // we may encounter with two postComponent with same class name ex: after somebody respond to .....
     // so we need lastRef to remember so that we don't duplicate two spans
-    if (lastRef === atag.href) {
+    if (lastRef === postHref) {
       return; // no effect return .....
-    } else if (isInWhiteList(atag.href)) {
-      lastRef = atag.href;
+    } else if (isInWhiteList(postHref)) {
+      lastRef = postHref;
       const postBookMark = $(`<span class="bookmark" data-toggle="modal"
-        data-target="#modal" data-href="${atag.href}">將此則貼文加入書籤</span>`);
+        data-target="#modal" data-href="${postHref}">將此則貼文加入書籤</span>`);
 
       // div._5pcp(if fb change, we need to change too): parent of time span to append
       $(atag).parents('._5pcp').append(postBookMark);
@@ -52,16 +54,13 @@ $(document).find('div[role=article]').each((i, postComponent) => {
 });
 
 $('#modal').on('show.bs.modal', function(event) {
-  console.log('show from #modal');
-  console.log(event);
-  const button = $(event.relatedTarget); // Button that triggered the modal
-  const recipient = button.data('href'); // Extract info from data-* attributes
+  const span = $(event.relatedTarget); // Button that triggered the modal
+  const postHref = span.data('href'); // Extract info from data-* attributes
   // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
   // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-  console.log('recipient ', recipient);
+  console.log('postHref ', postHref);
   const modal = $(this);
-  modal.find('.modal-title').text('New message to ' + recipient);
-  modal.find('.modal-body input').val(recipient);
+  modal.find('.modal-body input').val(postHref);
 });
 
 /*

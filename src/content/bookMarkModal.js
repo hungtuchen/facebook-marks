@@ -1,27 +1,29 @@
 const bookMarkModal = `
-  <div class="bootstrap-styles">
-    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+  <div class="bootstrap-styles" id="modal-container">
+    <div class="modal" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="modalLabel">New message</h4>
+            <h4 class="modal-title" id="modalLabel">新增貼文至書籤</h4>
           </div>
           <div class="modal-body">
             <form>
               <div class="form-group">
-                <label for="recipient-name" class="control-label">Recipient:</label>
-                <input type="text" class="form-control" id="recipient-name">
+                <label for="name" class="control-label">名稱:</label>
+                <input type="text" class="form-control" id="name" placeholder="...為這篇貼文取名">
               </div>
               <div class="form-group">
-                <label for="message-text" class="control-label">Message:</label>
-                <textarea class="form-control" id="message-text"></textarea>
+                <label for="folder" class="control-label">資料夾:</label>
+                <select class="form-control" id="folder">
+                  <option>書籤列</option>
+                </select>
               </div>
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" data-dismiss="modal">Send message</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-primary">新增</button>
           </div>
         </div>
       </div>
