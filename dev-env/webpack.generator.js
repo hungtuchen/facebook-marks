@@ -10,7 +10,7 @@ import * as paths from './paths'
 // If you want to use any of style preprocessor, add related npm package + loader and uncomment following line
 var styleLoaders = {
   'css': '',
-  // 'less': '!less-loader',
+  'less': '!less-loader',
   // 'scss|sass': '!sass-loader',
   // 'styl': '!stylus-loader'
 };
@@ -18,7 +18,7 @@ var styleLoaders = {
 function makeStyleLoaders() {
   return Object.keys(styleLoaders).map(function(ext) {
     // NOTE Enable autoprefixer loader
-    var prefix = 'css-loader?sourceMap&root=../assets'//!autoprefixer-loader?browsers=last 2 version';
+    var prefix = 'css-loader?sourceMap&root=../assets!autoprefixer-loader?browsers=last 2 version';
     var extLoaders = prefix + styleLoaders[ext];
     var loader = 'style-loader!' + extLoaders;
 
