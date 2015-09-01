@@ -11,12 +11,11 @@ const bookMarkModal = `
             <form>
               <div class="form-group">
                 <label for="name" class="control-label">名稱:</label>
-                <input type="text" class="form-control" id="name" placeholder="...為這篇貼文取名">
+                <input type="text" class="form-control" id="name" placeholder="...為你的書籤取名">
               </div>
               <div class="form-group">
                 <label for="folder" class="control-label">資料夾:</label>
                 <select class="form-control" id="folder">
-                  <option>書籤列</option>
                 </select>
               </div>
             </form>

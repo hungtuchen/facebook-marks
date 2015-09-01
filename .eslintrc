@@ -8,7 +8,9 @@
   "rules": {
     "react/jsx-uses-react": 2,
     "react/jsx-uses-vars": 2,
-    "react/react-in-jsx-scope": 2
+    "react/react-in-jsx-scope": 2,
+    "func-names": 0,
+    "no-use-before-define": [2, "nofunc"]
   },
   "plugins": [
     "react"

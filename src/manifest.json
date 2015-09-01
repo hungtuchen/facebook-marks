@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "homepage_url": "https://github.com/schovi/webpack-chrome-extension",
+  "homepage_url": "https://github.com/transedward/facebook-marks",
   "content_scripts": [
     {
       "matches": [

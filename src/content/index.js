@@ -56,16 +56,30 @@ $(document).find('div[role=article]').each((i, postComponent) => {
 $('#modal').on('show.bs.modal', function(event) {
   const span = $(event.relatedTarget); // Button that triggered the modal
   const postHref = span.data('href'); // Extract info from data-* attributes
-  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
   console.log('postHref ', postHref);
   const modal = $(this);
   modal.find('.modal-body input').val(postHref);
 });
+/*
+Due to how HTML5 defines its semantics, the autofocus HTML attribute has no effect in Bootstrap modals.
+To achieve the same effect, use some custom JavaScript:
+*/
+$('#modal').on('shown.bs.modal', function() {
+  $('#name').focus();
+});
+
+const folderSelect = $('#folder');
+// folderSelect.on('change', function() {
+// });
+
+console.log('message about to sent');
+chrome.runtime.sendMessage({type: 'get_folders'}, ({lastestFolderHtml}) => {
+  folderSelect.append(lastestFolderHtml);
+});
 
 /*
 if (document.location.hostname === 'www.facebook.com') {
-  chrome.extension.sendRequest({method: 'page'}, () => {});
+  chrome.extension.sendRequest({type: 'page'}, () => {});
 }
 */
 /* deal with changed DOMs (i.e. AJAX-loaded content)
@@ -95,7 +109,7 @@ const registerObserver = () => {
   };
 
   const mutationObserver = new MutationObserver((mutations) => {
-    chrome.extension.sendRequest({method: 'page'}, () => {});
+    chrome.extension.sendRequest({type: 'page'}, () => {});
 
     let hasNewNode = false;
     mutations.forEach((mutation) => {
