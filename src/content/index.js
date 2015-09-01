@@ -5,28 +5,16 @@ require('bootstrap');
 import './index.less';
 import bookMarkModal from './bookMarkModal';
 
-
-$('#modal').on('show.bs.modal', function modalHandler(event) {
-  console.log(event);
-  const button = $(event.relatedTarget); // Button that triggered the modal
-  const recipient = button.data('href'); // Extract info from data-* attributes
-  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-  console.log('recipient ', recipient);
-  const modal = $(this);
-  modal.find('.modal-title').text('New message to ' + recipient);
-  modal.find('.modal-body input').val(recipient);
-});
-
-
-$('#modal').modal();
-const modalHolder = $('<div class="bootstrap-styles"></div>');
-$('body').append(modalHolder);
-$(bookMarkModal).appendTo(modalHolder);
+// append modal on body first
+$(bookMarkModal).appendTo('body');
+// hack to let modal events work as usual
+// http://stackoverflow.com/questions/13966259/how-to-namespace-twitter-bootstrap-so-styles-dont-conflict
+$('.modal-backdrop').first().appendTo('#modal-container');
 
 // possible fb post url pattern
 const targetPostWhiteList = [
   /(.*\/posts\/.*)/,
+  /(.*\/photo[s]?.*)/, // with single photo ex: photo.php?......
   /(.*\/photos\/.*)/,
   /(.*\/videos\/.*)/,
   /(.*\/groups\/.*\/permalink\/.*)/,
@@ -53,16 +41,29 @@ $(document).find('div[role=article]').each((i, postComponent) => {
       return; // no effect return .....
     } else if (isInWhiteList(atag.href)) {
       lastRef = atag.href;
-      const postBookMark = $(`<span class="bookmark" data-toggle="modal" data-target="#modal" data-href="${atag.href}">將此則貼文加入書籤</span>`);
-      // $(postBookMark).on('click', { href: atag.href}, (event) => {
-        // console.log(event.data.href);
-      // });
+      const postBookMark = $(`<span class="bookmark" data-toggle="modal"
+        data-target="#modal" data-href="${atag.href}">將此則貼文加入書籤</span>`);
+
       // div._5pcp(if fb change, we need to change too): parent of time span to append
       $(atag).parents('._5pcp').append(postBookMark);
       console.log('appended!');
     }
   });
 });
+
+$('#modal').on('show.bs.modal', function(event) {
+  console.log('show from #modal');
+  console.log(event);
+  const button = $(event.relatedTarget); // Button that triggered the modal
+  const recipient = button.data('href'); // Extract info from data-* attributes
+  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+  console.log('recipient ', recipient);
+  const modal = $(this);
+  modal.find('.modal-title').text('New message to ' + recipient);
+  modal.find('.modal-body input').val(recipient);
+});
+
 /*
 if (document.location.hostname === 'www.facebook.com') {
   chrome.extension.sendRequest({method: 'page'}, () => {});

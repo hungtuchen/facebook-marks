@@ -1,4 +1,5 @@
 const bookMarkModal = `
+  <div class="bootstrap-styles">
     <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -20,10 +21,12 @@ const bookMarkModal = `
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Send message</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Send message</button>
           </div>
         </div>
       </div>
-    </div>`;
+    </div>
+  </div>
+`;
 
 export default bookMarkModal;
