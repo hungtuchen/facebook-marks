@@ -87,8 +87,16 @@ function starEveryPost() {
 }
 
 function makeStar(postHref) {
-  const text = checkWasBookmarked(postHref) ? '移除書籤' : '將此則貼文加入書籤';
-  const postBookMark = $(`<span class="bookmark" data-href="${postHref}">${text}</span>`);
+  const tooltip = checkWasBookmarked(postHref) ? '移除標籤' : '將此貼文加入書籤';
+  const icon = checkWasBookmarked(postHref) ?
+    '<i class="fa fa-star"></i>' :
+    '<i class="fa fa-star-o"></i>';
+
+  const postBookMark = $(`
+    <div class="font-awesome-styles bookmark-container" data-href="${postHref}" data-hover="tooltip"
+      aria-label="${tooltip}">
+      <span>${icon}</span>
+    </div>`);
 
   postBookMark.on('click', {postHref}, function() {
     const href = $(this).data('href');
@@ -98,7 +106,9 @@ function makeStar(postHref) {
       chrome.runtime.sendMessage({type: 'remove_bookmark', id: wasBookmarked.id},
         ({removeSuccess, fbBookMarkList}) => {
           if (removeSuccess) {
-            $(this).text('將此則貼文加入書籤');
+            $(this).attr('aria-label', '將此貼文加入書籤');
+            const targetIcon = $(this).find('i')[0];
+            $(targetIcon).removeClass('fa-star').addClass('fa-star-o');
             lastestFbBookMarkList = fbBookMarkList;
             console.log('lastestFbBookMarkList after removed', lastestFbBookMarkList);
           }
@@ -145,7 +155,9 @@ addSubmitButton.on('click', function addSubmitHandler() {
         if (addSuccess) {
           lastestFbBookMarkList = fbBookMarkList;
           console.log('lastestFbBookMarkList after added', lastestFbBookMarkList);
-          $(currentPostBookmark).text('移除書籤');
+          $(currentPostBookmark).attr('aria-label', '移除書籤');
+          const targetIcon = $(currentPostBookmark).find('i')[0];
+          $(targetIcon).removeClass('fa-star-o').addClass('fa-star');
           modal.modal('hide');
         }
       });
