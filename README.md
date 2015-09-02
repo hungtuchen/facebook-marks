@@ -8,7 +8,10 @@ I realize we need a better way to **mark** the post (not just saved link or adde
 So I come up with this idea - just integration with our familiar usage - *Chrome BookMarks*
 
 ## Demo
-To be added.
+![add star to post](./demo/add star to post.png)
+![click to open modal](./demo/click to open modal.png)
+![succeed will turn blue](./demo/succeed will turn blue.png)
+![added successfully](./demo/added successfully.png)
 
 ## Installation
 To be added.
