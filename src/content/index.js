@@ -52,12 +52,19 @@ chrome.runtime.sendMessage({type: 'get_lastest_state'}, ({backgroundState}) => {
   lastestFbBookMarkList = fbBookMarkList;
   console.log('lastestFbBookMarkList', lastestFbBookMarkList);
   starEveryPost();
+  registerObserver();
 });
 
 function starEveryPost() {
   let lastRef;
   // every post would have role attributes with article value
   $(document).find('div[role=article]').each((i, postComponent) => {
+    // add custom class name to allow observer pass repeated component
+    const className = 'fbmk-starred';
+    if ($(postComponent).hasClass(className)) {
+      return;
+    }
+    $(postComponent).addClass(className);
     console.log(postComponent);
     // a._5pcq(if fb change, we need to change too) would contain time span and href of that post
     $(postComponent).find('a._5pcq').each((idx, atag) => {
@@ -88,10 +95,10 @@ function makeStar(postHref) {
     const wasBookmarked = checkWasBookmarked(href);
     // click to remove
     if (wasBookmarked) {
-      postBookMark.text('將此則貼文加入書籤'); // optimistically updated
       chrome.runtime.sendMessage({type: 'remove_bookmark', id: wasBookmarked.id},
         ({removeSuccess, fbBookMarkList}) => {
           if (removeSuccess) {
+            $(this).text('將此則貼文加入書籤');
             lastestFbBookMarkList = fbBookMarkList;
             console.log('lastestFbBookMarkList after removed', lastestFbBookMarkList);
           }
@@ -138,10 +145,10 @@ addSubmitButton.on('click', function addSubmitHandler() {
         if (addSuccess) {
           lastestFbBookMarkList = fbBookMarkList;
           console.log('lastestFbBookMarkList after added', lastestFbBookMarkList);
+          $(currentPostBookmark).text('移除書籤');
+          modal.modal('hide');
         }
       });
-    $(currentPostBookmark).text('移除書籤');
-    modal.modal('hide');
   }
   nameTextInput.val('請給標籤一個名稱！');
 });
@@ -153,8 +160,8 @@ if (document.location.hostname === 'www.facebook.com') {
 */
 /* deal with changed DOMs (i.e. AJAX-loaded content)
 ported from https://github.com/g0v/newshelper-extension/blob/master/content_script.js */
-/*
-const registerObserver = () => {
+
+function registerObserver() {
   const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
   const throttle = (() => {
@@ -178,8 +185,6 @@ const registerObserver = () => {
   };
 
   const mutationObserver = new MutationObserver((mutations) => {
-    chrome.extension.sendRequest({type: 'page'}, () => {});
-
     let hasNewNode = false;
     mutations.forEach((mutation) => {
       if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
@@ -188,11 +193,10 @@ const registerObserver = () => {
     });
     if (hasNewNode) {
       throttle(() => {
-        // censorFacebook(target);
+        starEveryPost();
       }, 1000);
     }
   });
 
   mutationObserver.observe(target, config);
-};
-*/
+}
