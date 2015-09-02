@@ -14,7 +14,7 @@ So I come up with this idea - just integration with our familiar usage - *Chrome
 ![added successfully](./demo/added successfully.png)
 
 ## Installation
-To be added.
+[Go here and click ADD TO CHROME](https://chrome.google.com/webstore/detail/facebook-marks/hlngdmfhfknkelobbofinlldicpioilm?hl=zh-TW)
 
 ## Development
 You should do this before editing any code to see how it works.
