@@ -1,5 +1,9 @@
 /* eslint-disable no-alert, no-console */
 
+window.myDebug = require('debug');
+
+const debug = myDebug('fbmk:background');
+
 let backgroundState =
 /* backgroundState would look like
 {
@@ -11,7 +15,7 @@ let backgroundState =
 chrome.bookmarks.getTree(bookmarkTreeNodes => {
   // root bookmarkTreeNode has no title, only one in its array and we can omit it.
   backgroundState = updateLastestState(bookmarkTreeNodes[0].children);
-  console.log('initial backgroundState', backgroundState);
+  debug('initial backgroundState', backgroundState);
 });
 // TODO: setTimeout for updateLastestState, so if user add new folder we can know;
 

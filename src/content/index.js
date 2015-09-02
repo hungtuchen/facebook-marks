@@ -5,6 +5,10 @@ require('bootstrap');
 import './index.less';
 import bookMarkModal from './bookMarkModal';
 
+// little debug utility
+const __DEV__ = false;
+let debug = __DEV__ ? console.log.bind(console) : debug = () => { return; };
+
 // TODO: ._5pbx.userContent for paragraph, if it should default title.
 
 let lastestFbBookMarkList = [];
@@ -33,7 +37,7 @@ const targetPostWhiteList = [
 
 const isInWhiteList = (href) => {
   return targetPostWhiteList.some(pattern => {
-    console.log(pattern);
+    debug(pattern);
     return href.search(pattern) !== -1;
   });
 };
@@ -45,12 +49,12 @@ const folderSelect = $('#folder');
 // });
 const addSubmitButton = $('#add-submit');
 
-console.log('message about to sent');
+debug('message about to sent');
 chrome.runtime.sendMessage({type: 'get_lastest_state'}, ({backgroundState}) => {
   const { folderHtml, fbBookMarkList } = backgroundState;
   folderSelect.append(folderHtml);
   lastestFbBookMarkList = fbBookMarkList;
-  console.log('lastestFbBookMarkList', lastestFbBookMarkList);
+  debug('lastestFbBookMarkList', lastestFbBookMarkList);
   starEveryPost();
   registerObserver();
 });
@@ -65,12 +69,12 @@ function starEveryPost() {
       return;
     }
     $(postComponent).addClass(className);
-    console.log(postComponent);
+    debug(postComponent);
     // a._5pcq(if fb change, we need to change too) would contain time span and href of that post
     $(postComponent).find('a._5pcq').each((idx, atag) => {
       const postHref = atag.href;
-      console.log(lastRef);
-      console.log(postHref);
+      debug(lastRef);
+      debug(postHref);
       // we may encounter with two postComponent with same class name ex: after somebody respond to .....
       // so we need lastRef to remember so that we don't duplicate two spans
       if (lastRef === postHref || lastRef + '#' === postHref) {
@@ -80,7 +84,7 @@ function starEveryPost() {
         const postBookMark = makeStar(postHref);
         // div._5pcp(if fb change, we need to change too): parent of time span to append
         $(atag).parents('._5pcp').append(postBookMark);
-        console.log('appended!');
+        debug('appended!');
       }
     });
   });
@@ -110,14 +114,14 @@ function makeStar(postHref) {
             const targetIcon = $(this).find('i')[0];
             $(targetIcon).removeClass('fa-star').addClass('fa-star-o');
             lastestFbBookMarkList = fbBookMarkList;
-            console.log('lastestFbBookMarkList after removed', lastestFbBookMarkList);
+            debug('lastestFbBookMarkList after removed', lastestFbBookMarkList);
           }
         });
       return false;
     }
     // click to open modal
     currentPostBookmark = $(this);
-    console.log('currentPostBookmark', currentPostBookmark);
+    debug('currentPostBookmark', currentPostBookmark);
     modal.modal('show', {postHref});
   });
   return postBookMark;
@@ -125,7 +129,7 @@ function makeStar(postHref) {
 
 function checkWasBookmarked(href) {
   const wasBookmarked = lastestFbBookMarkList.filter(b => b.url === href)[0];
-  console.log('wasBookmarked', wasBookmarked);
+  debug('wasBookmarked', wasBookmarked);
   // wasBookmarked: {id: "*", url: "https://www.facebook.com/*/posts/*"}
   return wasBookmarked;
 }
@@ -144,17 +148,17 @@ modal.on('shown.bs.modal', function() {
 
 
 addSubmitButton.on('click', function addSubmitHandler() {
-  console.log('addSubmitHandler currentPostBookmark', currentPostBookmark);
+  debug('addSubmitHandler currentPostBookmark', currentPostBookmark);
   const url = $(currentPostBookmark).data('href');
   const parentId = folderSelect.val();
   const title = nameTextInput.val();
-  console.log(url, parentId, title);
+  debug(url, parentId, title);
   if (title) {
     chrome.runtime.sendMessage({ type: 'add_bookmark', parentId, title, url},
       ({addSuccess, fbBookMarkList}) => {
         if (addSuccess) {
           lastestFbBookMarkList = fbBookMarkList;
-          console.log('lastestFbBookMarkList after added', lastestFbBookMarkList);
+          debug('lastestFbBookMarkList after added', lastestFbBookMarkList);
           $(currentPostBookmark).attr('aria-label', '移除書籤');
           const targetIcon = $(currentPostBookmark).find('i')[0];
           $(targetIcon).removeClass('fa-star-o').addClass('fa-star');
