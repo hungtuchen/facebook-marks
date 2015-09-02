@@ -1,6 +1,6 @@
 /* eslint-disable no-alert, no-console */
 
-let backgroundState;
+let backgroundState =
 /* backgroundState would look like
 {
   folderHtml: '',
@@ -19,14 +19,18 @@ function onMessage(message, sender, sendResponse) {
   switch (message.type) {
   case 'add_bookmark':
     const { parentId, title, url } = message;
-    chrome.bookmarks.create({parentId, title, url}, () => {
-      sendResponse({ addSuccess: true });
+    chrome.bookmarks.create({parentId, title, url}, (newNode) => {
+      if (!backgroundState.fbBookMarkList) { backgroundState.fbBookMarkList = []; }
+      backgroundState.fbBookMarkList.push({ id: newNode.id, url: newNode.url });
+      sendResponse({ addSuccess: true, fbBookMarkList: backgroundState.fbBookMarkList });
     });
     return true;
   case 'remove_bookmark':
     const { id } = message;
     chrome.bookmarks.remove(id, () => {
-      sendResponse({ removeSuccess: true });
+      const newFbBookMarkList = backgroundState.fbBookMarkList.filter(bookmark => bookmark.id !== id);
+      backgroundState.fbBookMarkList = newFbBookMarkList;
+      sendResponse({ removeSuccess: true, fbBookMarkList: newFbBookMarkList });
     });
     return true;
   case 'get_lastest_state':
