@@ -13,6 +13,7 @@ chrome.bookmarks.getTree(bookmarkTreeNodes => {
   backgroundState = updateLastestState(bookmarkTreeNodes[0].children);
   console.log('initial backgroundState', backgroundState);
 });
+// TODO: setTimeout for updateLastestState, so if user add new folder we can know;
 
 function onMessage(message, sender, sendResponse) {
   switch (message.type) {
