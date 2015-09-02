@@ -5,6 +5,8 @@ require('bootstrap');
 import './index.less';
 import bookMarkModal from './bookMarkModal';
 
+let lastestFbBookMarkList = [];
+
 // append modal on body first
 const bookMarkModalContainer = $(bookMarkModal);
 $('body').append(bookMarkModalContainer);
@@ -28,30 +30,45 @@ const isInWhiteList = (href) => {
   });
 };
 
-let lastRef;
-// every post would have role attributes with article value
-$(document).find('div[role=article]').each((i, postComponent) => {
-  console.log(postComponent);
-  // a._5pcq(if fb change, we need to change too) would contain time span and href of that post
-  $(postComponent).find('a._5pcq').each((idx, atag) => {
-    const postHref = atag.href;
-    console.log(lastRef);
-    console.log(postHref);
-    // we may encounter with two postComponent with same class name ex: after somebody respond to .....
-    // so we need lastRef to remember so that we don't duplicate two spans
-    if (lastRef === postHref) {
-      return; // no effect return .....
-    } else if (isInWhiteList(postHref)) {
-      lastRef = postHref;
-      const postBookMark = $(`<span class="bookmark" data-toggle="modal"
-        data-target="#modal" data-href="${postHref}">將此則貼文加入書籤</span>`);
+const folderSelect = $('#folder');
+// folderSelect.on('change', function() {
+// });
 
-      // div._5pcp(if fb change, we need to change too): parent of time span to append
-      $(atag).parents('._5pcp').append(postBookMark);
-      console.log('appended!');
-    }
-  });
+console.log('message about to sent');
+chrome.runtime.sendMessage({type: 'get_lastest_state'}, ({backgroundState}) => {
+  const { folderHtml, fbBookMarkList } = backgroundState;
+  folderSelect.append(folderHtml);
+  lastestFbBookMarkList = fbBookMarkList;
+  console.log('lastestFbBookMarkList', lastestFbBookMarkList);
+  starEveryPost();
 });
+
+function starEveryPost() {
+  let lastRef;
+  // every post would have role attributes with article value
+  $(document).find('div[role=article]').each((i, postComponent) => {
+    console.log(postComponent);
+    // a._5pcq(if fb change, we need to change too) would contain time span and href of that post
+    $(postComponent).find('a._5pcq').each((idx, atag) => {
+      const postHref = atag.href;
+      console.log(lastRef);
+      console.log(postHref);
+      // we may encounter with two postComponent with same class name ex: after somebody respond to .....
+      // so we need lastRef to remember so that we don't duplicate two spans
+      if (lastRef === postHref || lastRef + '#' === postHref) {
+        return;
+      } else if (isInWhiteList(postHref)) {
+        lastRef = postHref;
+        const postBookMark = $(`<span class="bookmark" data-toggle="modal"
+          data-target="#modal" data-href="${postHref}">將此則貼文加入書籤</span>`);
+
+        // div._5pcp(if fb change, we need to change too): parent of time span to append
+        $(atag).parents('._5pcp').append(postBookMark);
+        console.log('appended!');
+      }
+    });
+  });
+}
 
 $('#modal').on('show.bs.modal', function(event) {
   const span = $(event.relatedTarget); // Button that triggered the modal
@@ -66,15 +83,6 @@ To achieve the same effect, use some custom JavaScript:
 */
 $('#modal').on('shown.bs.modal', function() {
   $('#name').focus();
-});
-
-const folderSelect = $('#folder');
-// folderSelect.on('change', function() {
-// });
-
-console.log('message about to sent');
-chrome.runtime.sendMessage({type: 'get_folders'}, ({lastestFolderHtml}) => {
-  folderSelect.append(lastestFolderHtml);
 });
 
 /*

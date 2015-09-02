@@ -1,16 +1,42 @@
 /* eslint-disable no-alert, no-console */
 
-let lastestFolderHtml;
+let backgroundState;
+/* backgroundState would look like
+{
+  folderHtml: '',
+  fbBookMarkList: [],
+};
+*/
+// background.js initialized, we can update the backgroundState directly, don't wait for content.js asking
+chrome.bookmarks.getTree(bookmarkTreeNodes => {
+  // root bookmarkTreeNode has no title, only one in its array and we can omit it.
+  backgroundState = updateLastestState(bookmarkTreeNodes[0].children);
+  console.log('initial backgroundState', backgroundState);
+});
 
 function onMessage(message, sender, sendResponse) {
   switch (message.type) {
   case 'add_bookmark':
-    break;
-  case 'get_folders':
+    const { parentId, title, url } = message;
+    chrome.bookmarks.create({parentId, title, url}, () => {
+      sendResponse({ addSuccess: true });
+    });
+    return true;
+  case 'remove_bookmark':
+    const { id } = message;
+    chrome.bookmarks.remove(id, () => {
+      sendResponse({ removeSuccess: true });
+    });
+    return true;
+  case 'get_lastest_state':
+    if (backgroundState) {
+      sendResponse({backgroundState});
+      return;
+    }
     chrome.bookmarks.getTree(bookmarkTreeNodes => {
       // root bookmarkTreeNode has no title, only one in its array and we can omit it.
-      lastestFolderHtml = makeFolderHtml(bookmarkTreeNodes[0].children);
-      sendResponse({lastestFolderHtml});
+      backgroundState = updateLastestState(bookmarkTreeNodes[0].children);
+      sendResponse({backgroundState});
     });
     return true;
     /*
@@ -24,27 +50,25 @@ function onMessage(message, sender, sendResponse) {
   }
 }
 
-function makeFolderHtml(rootNodes) {
+function updateLastestState(rootNodes) {
   let folderHtml = '';
-  (function recursiveMakeHtml(bookMarkNodes, level) {
+  const fbBookMarkList = [];
+  (function recursiveUpdate(bookMarkNodes, level) {
     // http://stackoverflow.com/questions/1877475/repeat-character-n-times
     const prefix = Array(level).join('&nbsp;&nbsp;&nbsp;&nbsp;');
     bookMarkNodes.forEach(bookMarkNode => {
       // if bookMarkNodes has children, then it's an folder
       if (bookMarkNode.children) {
         folderHtml += `<option value="${bookMarkNode.id}">${prefix + bookMarkNode.title}</option>`;
-        recursiveMakeHtml(bookMarkNode.children, level + 1);
+        recursiveUpdate(bookMarkNode.children, level + 1);
+      } else if (bookMarkNode.url.indexOf('https://www.facebook.com/') !== -1) {
+        // if bookMarkNodes has no children, then it's a bookmark and we filter url only within fb
+        fbBookMarkList.push({id: bookMarkNode.id, url: bookMarkNode.url});
       }
     });
   })(rootNodes, 1);
-  return folderHtml;
+  return { folderHtml, fbBookMarkList };
 }
-/*
-chrome.bookmarks.getTree(bookmarkTreeNodes => {
-  // root bookmarkTreeNode has no title, only one in its array and we can omit it.
-  lastestFolderHtml = makeFolderHtml(bookmarkTreeNodes[0].children);
-  console.log('lastestFolderHtml', lastestFolderHtml);
-});
-*/
+
 // Listen for the content script to send a message to the background page.
 chrome.runtime.onMessage.addListener(onMessage);
