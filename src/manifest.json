@@ -15,7 +15,6 @@
     "scripts": ["background/index.js"]
   },
   "permissions": [
-    "background",
     "bookmarks",
     "https://www.facebook.com/*",
     "http://www.facebook.com/*"
