@@ -1,5 +1,7 @@
 /* eslint-disable no-alert, no-console */
 
+import isEqual from 'lodash/lang/isEqual';
+
 window.myDebug = require('debug');
 
 const debug = myDebug('fbmk:background');
@@ -29,6 +31,7 @@ function onMessage(message, sender, sendResponse) {
       sendResponse({ addSuccess: true, fbBookMarkList: backgroundState.fbBookMarkList });
     });
     return true;
+
   case 'remove_bookmark':
     const { id } = message;
     chrome.bookmarks.remove(id, () => {
@@ -37,6 +40,7 @@ function onMessage(message, sender, sendResponse) {
       sendResponse({ removeSuccess: true, fbBookMarkList: newFbBookMarkList });
     });
     return true;
+
   case 'get_lastest_state':
     if (backgroundState) {
       sendResponse({backgroundState});
@@ -48,6 +52,7 @@ function onMessage(message, sender, sendResponse) {
       sendResponse({backgroundState});
     });
     return true;
+
     /*
     This function becomes invalid when the event listener returns, unless you return true from
     the event listener to indicate you wish to send a response asynchronously
@@ -81,3 +86,37 @@ function updateLastestState(rootNodes) {
 
 // Listen for the content script to send a message to the background page.
 chrome.runtime.onMessage.addListener(onMessage);
+
+function handleBookmarksChanged() {
+  chrome.bookmarks.getTree(bookmarkTreeNodes => {
+    // root bookmarkTreeNode has no title, only one in its array and we can omit it.
+    const { folderHtml, fbBookMarkList } = updateLastestState(bookmarkTreeNodes[0].children);
+    if (backgroundState.folderHtml !== folderHtml) {
+      debug('new folderHtml', folderHtml);
+      backgroundState.folderHtml = folderHtml;
+      chrome.tabs.query({url: 'https://www.facebook.com/*'}, function(tabs) {
+        debug('tabs', tabs);
+        tabs.forEach((tab) => {
+          chrome.tabs.sendMessage(tab.id, { type: 'folderHtml_has_changed', folderHtml}, () => {});
+        });
+      });
+    }
+    if (!isEqual(backgroundState.fbBookMarkList, fbBookMarkList)) {
+      debug('new fbBookMarkList', fbBookMarkList);
+      backgroundState.fbBookMarkList = fbBookMarkList;
+      chrome.tabs.query({url: 'https://www.facebook.com/*'}, function(tabs) {
+        debug('tabs', tabs);
+        tabs.forEach((tab) => {
+          chrome.tabs.sendMessage(tab.id, { type: 'fbBookMarkList_has_changed', fbBookMarkList}, () => {});
+        });
+      });
+    }
+  });
+}
+
+chrome.bookmarks.onCreated.addListener(handleBookmarksChanged);
+chrome.bookmarks.onRemoved.addListener(handleBookmarksChanged);
+// Note: Currently, only title and url changes trigger this, so we need to add all possible changes
+chrome.bookmarks.onChanged.addListener(handleBookmarksChanged);
+chrome.bookmarks.onMoved.addListener(handleBookmarksChanged);
+chrome.bookmarks.onChildrenReordered.addListener(handleBookmarksChanged);

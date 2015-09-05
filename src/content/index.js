@@ -91,7 +91,9 @@ function starEveryPost() {
 }
 
 function makeStar(postHref) {
-  const tooltip = checkWasBookmarked(postHref) ? '移除標籤' : '將此貼文加入書籤';
+  const tooltip = checkWasBookmarked(postHref) ?
+    chrome.i18n.getMessage('removeBookmarkTooltip') :
+    chrome.i18n.getMessage('addBookmarkTooltip');
   const icon = checkWasBookmarked(postHref) ?
     '<i class="fa fa-star"></i>' :
     '<i class="fa fa-star-o"></i>';
@@ -110,7 +112,7 @@ function makeStar(postHref) {
       chrome.runtime.sendMessage({type: 'remove_bookmark', id: wasBookmarked.id},
         ({removeSuccess, fbBookMarkList}) => {
           if (removeSuccess) {
-            $(this).attr('aria-label', '將此貼文加入書籤');
+            $(this).attr('aria-label', chrome.i18n.getMessage('addBookmarkTooltip'));
             const targetIcon = $(this).find('i')[0];
             $(targetIcon).removeClass('fa-star').addClass('fa-star-o');
             lastestFbBookMarkList = fbBookMarkList;
@@ -159,7 +161,7 @@ addSubmitButton.on('click', function addSubmitHandler() {
         if (addSuccess) {
           lastestFbBookMarkList = fbBookMarkList;
           debug('lastestFbBookMarkList after added', lastestFbBookMarkList);
-          $(currentPostBookmark).attr('aria-label', '移除書籤');
+          $(currentPostBookmark).attr('aria-label', chrome.i18n.getMessage('removeBookmarkTooltip'));
           const targetIcon = $(currentPostBookmark).find('i')[0];
           $(targetIcon).removeClass('fa-star-o').addClass('fa-star');
           modal.modal('hide');
@@ -216,3 +218,29 @@ function registerObserver() {
 
   mutationObserver.observe(target, config);
 }
+
+function onMessage(message, sender, sendResponse) {
+  switch (message.type) {
+  case 'folderHtml_has_changed':
+    debug('folderHtml_has_changed received');
+    const { folderHtml } = message;
+    debug('new folderHtml', folderHtml);
+    folderSelect.html(folderHtml);
+    sendResponse({});
+    break;
+
+  case 'fbBookMarkList_has_changed':
+    debug('fbBookMarkList_has_changed received');
+    const { fbBookMarkList } = message;
+    debug('new fbBookMarkList', fbBookMarkList);
+    lastestFbBookMarkList = fbBookMarkList;
+    sendResponse({});
+    break;
+
+  default:
+  // Return nothing to let the connection be cleaned up.
+    sendResponse({});
+  }
+}
+
+chrome.runtime.onMessage.addListener(onMessage);
