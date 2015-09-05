@@ -163,6 +163,7 @@ export default function() {
 
   // create icons folder if icons specified in manifest.json
   if (manifest.icons && Object.keys(manifest.icons).length) {
+    console.log(clc.green(`Making 'build/icons'`))
     const sourceIconsPath = path.resolve(path.join('src', 'icons'));
     const destIconsPath = path.join(buildPath, "icons");
      // copies whole icons folder, sync method doesn't need callback
