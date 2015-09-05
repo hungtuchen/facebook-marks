@@ -6,7 +6,7 @@ import './index.less';
 import bookMarkModal from './bookMarkModal';
 
 // little debug utility
-const __DEV__ = false;
+const __DEV__ = process.env.NODE_ENV !== 'production';
 let debug = __DEV__ ? console.log.bind(console) : debug = () => { return; };
 
 // TODO: ._5pbx.userContent for paragraph, if it should default title.
