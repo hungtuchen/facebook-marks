@@ -1,6 +1,9 @@
 {
+  "name": "__MSG_extName__",
+  "description": "__MSG_extDescription__",
   "manifest_version": 2,
   "homepage_url": "https://github.com/transedward/facebook-marks",
+  "default_locale": "en",
   "content_scripts": [
     {
       "matches": [

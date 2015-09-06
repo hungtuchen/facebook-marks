@@ -25,7 +25,7 @@ export default function() {
   fs.mkdirSync(buildPath)
 
   // Merge manifest.json with name, description and version from package.json
-  const packageValues = _.pick(packageConfig, 'name', 'description', 'version');
+  const packageValues = _.pick(packageConfig, 'version');
   const manifest = _.merge(manifestSkelet, packageValues);
 
   //////////
@@ -168,6 +168,16 @@ export default function() {
     const destIconsPath = path.join(buildPath, "icons");
      // copies whole icons folder, sync method doesn't need callback
     fs.copySync(sourceIconsPath, destIconsPath);
+
+  }
+
+  // create _locales folder if default_locale specified in manifest.json
+  if (manifest.default_locale) {
+    console.log(clc.green(`Making 'build/_locales'`))
+    const sourceLocalesPath = path.resolve(path.join('src', '_locales'));
+    const destLocalesPath = path.join(buildPath, "_locales");
+     // copies whole icons folder, sync method doesn't need callback
+    fs.copySync(sourceLocalesPath, destLocalesPath);
 
   }
 

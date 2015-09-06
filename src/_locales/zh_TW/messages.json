@@ -1,0 +1,46 @@
+{
+  "extName": {
+    "message": "臉書籤",
+    "description": "擴充功能的名稱"
+  },
+  "extDescription": {
+    "message": "像 Chrome 書籤一樣標記每則 fb 貼文，不再找不到想找的貼文啦",
+    "description": "擴充功能的敘述"
+  },
+  "addBookmarkTooltip": {
+    "message": "將此貼文加入書籤",
+    "description": "當貼文還沒被加入書籤的提示"
+  },
+  "removeBookmarkTooltip": {
+    "message": "將此貼文從書籤中移除",
+    "description": "當貼文已被加入書籤的提示"
+  },
+  "hintWhenNameEmpty": {
+    "message": "請給此書籤一個名稱！",
+    "description": "當書籤名稱為空白時給的提示"
+  },
+  "modalTitle": {
+    "message": "新增貼文至書籤",
+    "description": "視窗的標題"
+  },
+  "nameTextInputLabel": {
+    "message": "名稱:",
+    "description": "視窗中表單文字輸入欄的標籤"
+  },
+  "nameTextInputPlaceholder": {
+    "message": "...為你的書籤取名",
+    "description": "視窗中表單文字輸入欄的空白提示"
+  },
+  "folderSelectLabel": {
+    "message": "資料夾:",
+    "description": "視窗中表單列表選擇欄的標籤"
+  },
+  "cancelButton": {
+    "message": "取消",
+    "description": "視窗中的取消按鈕"
+  },
+  "submitButton": {
+    "message": "新增",
+    "description": "視窗中的遞交按鈕"
+  }
+}

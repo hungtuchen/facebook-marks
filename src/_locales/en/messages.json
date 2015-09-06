@@ -1,0 +1,46 @@
+{
+  "extName": {
+    "message": "facebook-marks",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Let you bookmark fb posts like chrome bookmarks, never forget any fb post you want to find",
+    "description": "Extension description"
+  },
+  "addBookmarkTooltip": {
+    "message": "add this post to bookmarks",
+    "description": "tooltip displayed when the stat of the post hovered is not bookmarked."
+  },
+  "removeBookmarkTooltip": {
+    "message": "remove this post from bookmarks",
+    "description": "tooltip displayed when the stat of the post hovered was bookmarked."
+  },
+  "hintWhenNameEmpty": {
+    "message": "Please specify a name for this bookmark!",
+    "description": "hint displayed on text input when name is not given"
+  },
+  "modalTitle": {
+    "message": "Add post to bookmarks",
+    "description": "the title of modal"
+  },
+  "nameTextInputLabel": {
+    "message": "Name:",
+    "description": "the label of input[type=text] of modal"
+  },
+  "nameTextInputPlaceholder": {
+    "message": "...Name your bookmark",
+    "description": "the placeholder of input[type=text] of modal"
+  },
+  "folderSelectLabel": {
+    "message": "Folder:",
+    "description": "the label of select of modal"
+  },
+  "cancelButton": {
+    "message": "Cancel",
+    "description": "the cancel button of modal"
+  },
+  "submitButton": {
+    "message": "Submit",
+    "description": "the submit button of modal"
+  }
+}

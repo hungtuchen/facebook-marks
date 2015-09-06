@@ -167,8 +167,9 @@ addSubmitButton.on('click', function addSubmitHandler() {
           modal.modal('hide');
         }
       });
+  } else {
+    nameTextInput.val(chrome.i18n.getMessage('hintWhenNameEmpty'));
   }
-  nameTextInput.val('請給標籤一個名稱！');
 });
 
 /*
