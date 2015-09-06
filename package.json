@@ -1,6 +1,6 @@
 {
   "name": "facebook-marks",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "a chrome extension let you bookmark fb posts like chrome bookmarks",
   "private": true,
   "scripts": {
