@@ -33,6 +33,8 @@ const targetPostWhiteList = [
   /(.*\/groups\/.*\/permalink\/.*)/,
   /(.*\/note[s]?.*)/,
   /(.*\/notes\/.*)/,
+  /(.*\/media[s]?.*)/,
+  /(.*\/medias\/.*)/,
 ];
 
 const isInWhiteList = (href) => {
