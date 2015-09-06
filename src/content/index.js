@@ -23,18 +23,13 @@ $('.modal-backdrop').first().appendTo(bookMarkModalContainer);
 
 // possible fb post url pattern
 const targetPostWhiteList = [
-  /(.*\/post[s]?.*)/,
-  /(.*\/posts\/.*)/,
-  /(.*\/photo[s]?.*)/, // with single photo ex: photo.php?......
-  /(.*\/photos\/.*)/,
-  /(.*\/video[s]?.*)/,
-  /(.*\/videos\/.*)/,
+  /(.*\/post[s]?[\/]?.*)/,
+  /(.*\/photo[s]?[\/]?.*)/, // with single photo ex: photo.php?......
+  /(.*\/video[s]?[\/]?.*)/,
   /(.*\/permalink[s]?.*)/,
   /(.*\/groups\/.*\/permalink\/.*)/,
-  /(.*\/note[s]?.*)/,
-  /(.*\/notes\/.*)/,
-  /(.*\/media[s]?.*)/,
-  /(.*\/medias\/.*)/,
+  /(.*\/note[s]?[\/]?.*)/,
+  /(.*\/media[s]?[\/]?.*)/,
 ];
 
 const isInWhiteList = (href) => {
