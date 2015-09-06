@@ -7,11 +7,17 @@ I realize we need a better way to **mark** the post (not just saved link or adde
 
 So I come up with this idea - just integration with our familiar usage - *Chrome BookMarks*
 
+Now through installation, you would get a star on each of the fb post.
+
+If you click it, modal would pop put then asking folder and name which you wanna attach this post - *just like chrome bookmarks*.
+
+And if it succeed, the star will turn blue indicating you next time you see the post.
+
 ## Demo
-![add star to post](./demo/add star to post.jpg)
-![click to open modal](./demo/click to open modal.jpg)
-![succeed will turn blue](./demo/succeed will turn blue.jpg)
-![added successfully](./demo/added successfully.jpg)
+![add star to post](./demo/en/add star to post.png)
+![click to open modal](./demo/en/click to open modal.png)
+![succeed will turn blue](./demo/en/succeed will turn blue.png)
+![added successfully](./demo/en/added successfully.png)
 
 ## Installation
 [Go here and click ADD TO CHROME](https://chrome.google.com/webstore/detail/facebook-marks/hlngdmfhfknkelobbofinlldicpioilm?hl=zh-TW)
