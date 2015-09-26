@@ -69,12 +69,12 @@ function starEveryPost() {
     debug(postComponent);
     // a._5pcq(if fb change, we need to change too) would contain time span and href of that post
     $(postComponent).find('a._5pcq').each((idx, atag) => {
-      const postHref = atag.href;
+      const postHref = atag.href.split(/[#?&]/)[0];
       debug(lastRef);
       debug(postHref);
       // we may encounter with two postComponent with same class name ex: after somebody respond to .....
       // so we need lastRef to remember so that we don't duplicate two spans
-      if (lastRef === postHref || lastRef + '#' === postHref) {
+      if (lastRef === postHref) {
         return;
       } else if (isInWhiteList(postHref)) {
         lastRef = postHref;
