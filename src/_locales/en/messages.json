@@ -8,11 +8,11 @@
     "description": "Extension description"
   },
   "addBookmarkTooltip": {
-    "message": "add this post to bookmarks",
+    "message": "Add this post to bookmarks",
     "description": "tooltip displayed when the stat of the post hovered is not bookmarked."
   },
   "removeBookmarkTooltip": {
-    "message": "remove this post from bookmarks",
+    "message": "Remove this post from bookmarks",
     "description": "tooltip displayed when the stat of the post hovered was bookmarked."
   },
   "hintWhenNameEmpty": {
