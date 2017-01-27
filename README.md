@@ -1,5 +1,7 @@
 facebook-marks
 ===============================
+**Now being taken down because of infringe upon the trademarks of Facebook**
+
 ## Motivation
 There are times I wish I could find some specific post but just can't remember where it is.
 
@@ -12,15 +14,6 @@ Now through installation, you would get a star on each of the fb post.
 If you click it, modal would pop put then asking folder and name which you wanna attach this post - *just like chrome bookmarks*.
 
 And if it succeed, the star will turn blue indicating you next time you see the post.
-
-## Demo
-![add star to post](./demo/en/add star to post.png)
-![click to open modal](./demo/en/click to open modal.png)
-![succeed will turn blue](./demo/en/succeed will turn blue.png)
-![added successfully](./demo/en/added successfully.png)
-
-## Installation
-[Go here and click ADD TO CHROME](https://chrome.google.com/webstore/detail/facebook-marks/hlngdmfhfknkelobbofinlldicpioilm?hl=zh-TW)
 
 ## Development
 You should do this before editing any code to see how it works.
